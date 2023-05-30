@@ -1,7 +1,3 @@
-console.log("H!")
-function feedMe(){
-    console.log("Im hungry")
+function getDistance (x1, y12, x2, y2) {
+    
 }
-
-console.log("something else")
-test test
