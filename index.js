@@ -1,11 +1,11 @@
-/*function getDistance (x1, y1, x2, y2) {
+function getDistance (x1, y1, x2, y2) {
     for (let i = 0; i < 4; i++) {
         if (typeof arguments[i] !== "number" || isNaN (arguments[i]) || typeof arguments[i] === undefined) {
-            throw new Error("Not a number")
+            throw new Error()
         } else if (arguments[i] === Infinity || arguments[i] === -Infinity){
-            throw new Error("Not correct number.")
+            throw new Error()
         } else if (arguments[i] > 1000 || arguments[i] < -1000){
-            throw new Error ("Not in the frames")
+            throw new Error ()
         }
     }
     const distance = Math.hypot(x2-x1, y2-y1)
@@ -15,7 +15,7 @@
         return distance.toFixed(2)
     }
 }
-*/
+
 
 function switchPlaces(arr) {
     if(Array.isArray(arr)) {
@@ -36,6 +36,33 @@ function switchPlaces(arr) {
                 return result
         }
     } else {
-        throw new Error("Not array")
+        throw new Error()
     }
+}
+
+
+function getDivisors(num) {
+    if (num === Infinity || num === -Infinity){
+        throw new Error()
+    } else if (isNaN(num) || typeof num !== "number"){
+        throw new Error()
+    } else {
+        if (num > 0){
+            let result = []
+            for (let i = num; i > 0; i--) {
+                if(num % i === 0){
+                    result.push(i)
+                }
+            }
+            return result
+    }   else {
+            let result = []
+            for (let i = num; i < 0; i++) {
+                if(num % i === 0){
+                    result.push(i)
+                }
+            }
+            return result
+    }
+}
 }
