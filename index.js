@@ -8,6 +8,10 @@ function getDistance (x1, y1, x2, y2) {
             throw new Error ("Not in the frames")
         }
     }
-    let distance = Math.hypot(x2-x1, y2-y1)
-    return distance.toFixed(2)
+    const distance = Math.hypot(x2-x1, y2-y1)
+    if (Number.isInteger(distance)) {
+        return distance
+    } else {
+        return distance.toFixed(2)
+    }
 }
