@@ -1,89 +1,64 @@
-function makeDeepCopy(srcObj) {
-    if (!srcObj || 
-        typeof srcObj !== 'object' || 
-        srcObj instanceof Set || 
-        srcObj instanceof Map) {
-        throw new Error('')
-    }
-
-    function makeCopy(sourceObject) {
-        if (typeof sourceObject !== 'object' || sourceObject === null) {
-            return sourceObject
+Array.prototype.customFilter = function (func, thisParam) {
+    if (!func || typeof func !== "function") {
+        throw new Error("Invalid argument.")
+    } else if (
+        (thisParam && typeof thisParam !== "object") ||
+        thisParam === null ||
+        Array.isArray(thisParam)
+    ) {
+        throw new Error("Invalid argument.")
+    } else {
+        const result = []
+        for (let i = 0; i < this.length; i++) {
+            if (func.call(thisParam, this[i], i, this)) {
+                result.push(this[i])
+            }
         }
-
-        let targetObject = {}
-
-        for (let key in sourceObject) {
-            let value = sourceObject[key]
-            targetObject[key] = makeCopy(value)
-        }
-
-        return targetObject
+        return result
     }
-    return makeCopy(srcObj)
 }
 
-
-function createIterable(num1, num2) {
-    if(num1 >= num2) {
-        throw new Error()
+function bubbleSort(arr) {
+    const arrCopy = [...arr]
+    if (arr.length === 0) {
+        return arrCopy
     }
-    for (const num of arguments) {
+    for (const element of arrCopy) {
         if (
-          !Number.isFinite(num) ||
-          Number.isNaN(num) ||
-          typeof num !== "number" ||
-          arguments.length < 2 ||
-          arguments.length > 2 ||
-          num % 1 !== 0
+            typeof element !== "number" ||
+            isNaN(element) ||
+            !isFinite(element)
         ) {
-          throw new Error()
+            throw new Error("Invalid argument.")
         }
     }
-    let range = {
-        from: num1,
-        to: num2,
-        [Symbol.iterator]() {
-            this.current = this.from
-            return this;
-        },
-        next() {
-            if (this.current <= this.to) {
-            return { done: false, value: this.current++ }
-            } else {
-            return { done: true }
-            }
+    for (let j = 0; j < arrCopy.length - 1; j++) {
+        for (let i = 0; i < arrCopy.length - 1; i++) {
+            if (arrCopy[i] > arrCopy[i + 1])
+                [arrCopy[i], arrCopy[i + 1]] = [arrCopy[i + 1], arrCopy[i]]
         }
     }
-    return range
+    return arrCopy
 }
 
-function createProxy(srcObj) {
-    if (!srcObj ||
-        typeof srcObj !== 'object' ||
-        Array.isArray(srcObj) ||
-        srcObj === null) {
-        throw new Error('')
+function storageWrapper(func, arr){
+    if (
+        typeof func !== "function" ||
+        arguments[0] === undefined
+    ) {
+        throw new Error("Invalid argument.")
+    } else if (arguments.length === 2 && !(Array.isArray(arguments[1]))) {
+        throw new Error("Invalid argument.")
     }
-    function insideProxyMagic(obj) {
-        const op = new Proxy(obj, {
-            set(target, prop, value) {
-                let readAmount = 0
-                if (!(prop in target)) {
-                    return target[prop] = `value: ${value}, readAmount: ${readAmount += 1}`
-                } else if (typeof (value) === typeof (target[prop])) {
-                    return target[prop] = value
-                } else {
-                    return `value!: ${target[prop]}, readAmount: ${readAmount = 0}`
-                }
-            },
-            get(target, prop) {
-                let readAmount = 0
-                return `value: ${target[prop]}, readAmount: ${readAmount += 1}`
-            
-            }
-        })
-        return op
+    result = []
+    return function(){
+        const resultCallBack = func()
+        if (Array.isArray(arr)) {
+            arr.push(resultCallBack)
+            return resultCallBack
+        } else {
+            result.push(resultCallBack)
+        }
+        return result
     }
-    return insideProxyMagic(srcObj)
 }
