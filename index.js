@@ -1,64 +1,73 @@
-Array.prototype.customFilter = function (func, thisParam) {
-    if (!func || typeof func !== "function") {
-        throw new Error("Invalid argument.")
-    } else if (
-        (thisParam && typeof thisParam !== "object") ||
-        thisParam === null ||
-        Array.isArray(thisParam)
-    ) {
-        throw new Error("Invalid argument.")
-    } else {
-        const result = []
-        for (let i = 0; i < this.length; i++) {
-            if (func.call(thisParam, this[i], i, this)) {
-                result.push(this[i])
-            }
-        }
-        return result
-    }
-}
-
-function bubbleSort(arr) {
-    const arrCopy = [...arr]
-    if (arr.length === 0) {
-        return arrCopy
-    }
-    for (const element of arrCopy) {
-        if (
-            typeof element !== "number" ||
-            isNaN(element) ||
-            !isFinite(element)
-        ) {
-            throw new Error("Invalid argument.")
-        }
-    }
-    for (let j = 0; j < arrCopy.length - 1; j++) {
-        for (let i = 0; i < arrCopy.length - 1; i++) {
-            if (arrCopy[i] > arrCopy[i + 1])
-                [arrCopy[i], arrCopy[i + 1]] = [arrCopy[i + 1], arrCopy[i]]
-        }
-    }
-    return arrCopy
-}
-
-function storageWrapper(func, arr){
+function createDebounceFunction(fn, num) {
     if (
-        typeof func !== "function" ||
-        arguments[0] === undefined
-    ) {
-        throw new Error("Invalid argument.")
-    } else if (arguments.length === 2 && !(Array.isArray(arguments[1]))) {
+        typeof num !== "number" ||
+        num < 0 ||
+        (!Number.isFinite(num)) ||
+        isNaN(num) ||
+        num % 1 !== 0) {
         throw new Error("Invalid argument.")
     }
-    result = []
-    return function(){
-        const resultCallBack = func()
-        if (Array.isArray(arr)) {
-            arr.push(resultCallBack)
-            return resultCallBack
-        } else {
-            result.push(resultCallBack)
+    if (typeof fn !== "function") {
+        throw new Error("Invalid argument.")
+    }
+
+    let timerId
+    return function () {
+        if (timerId !== undefined) {
+            clearTimeout(timerId)
         }
-        return result
+        timerId = setTimeout(fn, num)
+    }
+}
+
+class RickAndMorty {
+    getCharacter(characterId) {
+        if (
+            typeof characterId !== "number" ||
+            characterId <= 0 ||
+            (!Number.isFinite(characterId)) ||
+            isNaN(characterId) ||
+            characterId % 1 !== 0) {
+            throw new Error("Invalid character id")
+        }
+        return fetch(`https://rickandmortyapi.com/api/character/${characterId}`)
+            .then((res) => {
+                switch (res.status) {
+                    case 200:
+                        const character = res.json()
+                        return character;
+                    case 404:
+                        return null;
+                    default:
+                        throw new Error(`${res.statusText}`)
+                }
+            })
+            .catch((error) => console.log(error))
+    }
+    async getEpisode(episodeId) {
+        if (
+            typeof episodeId !== "number" ||
+            episodeId <= 0 ||
+            (!Number.isFinite(episodeId)) ||
+            isNaN(episodeId) ||
+            episodeId % 1 !== 0) {
+            throw new Error("Invalid episode id")
+        }
+        try {
+            const res = await fetch(
+                `https://rickandmortyapi.com/api/episode/${episodeId}`
+            )
+            switch (res.status) {
+                case 200:
+                    const episode = await res.json()
+                    return episode
+                case 404:
+                    return null
+                default:
+                    throw new Error(`${res.statusText}`)
+            }
+        } catch (error) {
+            return console.log(error)
+        }
     }
 }
