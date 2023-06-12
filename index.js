@@ -39,7 +39,7 @@ class RickAndMorty {
                     case 404:
                         return null;
                     default:
-                        throw new Error(`${res.statusText}`)
+                        throw new Error("Invalid character id")
                 }
             })
             .catch((error) => console.log(error))
@@ -64,7 +64,7 @@ class RickAndMorty {
                 case 404:
                     return null
                 default:
-                    throw new Error(`${res.statusText}`)
+                    throw new Error("Invalid episode id")
             }
         } catch (error) {
             return console.log(error)
